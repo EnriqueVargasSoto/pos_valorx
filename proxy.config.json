@@ -1,0 +1,6 @@
+{
+  "/api": {
+    "target": "https://api.remoto.com",
+    "secure": false
+  }
+}
