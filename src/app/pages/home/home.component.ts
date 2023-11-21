@@ -36,14 +36,17 @@ export class HomeComponent {
 
   async getProducts() {
 
-    if (this.filtro != "") {
-      this.pagination = 0;
-    }
+    //if (this.filtro != "") {
+    //  this.pagination = 0;
+    //}
 
     let body = {
       'lista_precio' : environment.lista_precio,
       'pagina' : this.pagination,
-      'filtroxnombre' : this.filtro.toUpperCase()
+      'filtroxnombre' : this.filtro.toUpperCase(),
+      'filtroxcategoria' : "",
+      'compania' : environment.Compania,
+      'sucursal' : environment.Sucursal
     };
     await this.service.consulta('list-products','post', body).subscribe(resp => {
 
@@ -118,6 +121,8 @@ export class HomeComponent {
     if (this.nrodocid.length == 8 || this.nrodocid.length == 11) {
       let body = {
         "nrodocid" : this.nrodocid,
+        'compania' : environment.Compania,
+      'sucursal' : environment.Sucursal
       };
       await this.service.consulta('search-client','post', body).subscribe(resp => {
 
