@@ -26,6 +26,9 @@ export class HomeComponent {
 
   total: number = 0.00;
 
+  venta: any;
+
+
   constructor(private service: ServicesService){}
 
   async ngOnInit() {
@@ -128,9 +131,65 @@ export class HomeComponent {
 
         console.log(resp);
         this.client = resp['data'];
+
         //this.paginas = resp['data']['total_paginas'];
         //console.log(this.products);
       });
     }
+  }
+
+  async guardarVenta() {
+    let bodyDetail = [];
+    for (let i = 0; i < this.carrito.length; i++) {
+      let detail = {
+        'sku' : this.carrito[i]['item_cod'],
+        'unidad_medida' : this.carrito[i]['unidad_man'],
+        'cantidad' : this.carrito[i]['cantidad']
+      };
+      bodyDetail.push(detail);
+    }
+
+    let body = {
+      'plataforma_origen' : '1',
+      'usuario' : 'VENDEDOR1',
+      'cod_comprobante' : this.client.tipodocid == 'DNI' ? 'BOL' : 'FXV',
+      'serie_comprobante' : 'B801',
+      'fecha_comprobante' : '2023-11-21',
+      'vendedor' : '10247812',
+      'lista_precio' : environment.lista_precio,
+      'nro_document_ide' : this.client.nrodocide,
+      'client' : this.client.cliente,
+      'forma_pago' : "001",
+      'moneda' : 'PEN',
+      'detalle_sales' : bodyDetail,
+      'compania' : environment.Compania,
+      'sucursal' : environment.Sucursal
+    }
+    const targetEl = document.getElementById('popup-modal-result');
+      const modal = new Modal(targetEl);
+
+    console.log(body);
+    await this.service.consulta('save-sale','post', body).subscribe(resp => {
+
+      console.log(resp);
+      this.venta = resp;
+
+      this.carrito = [];
+      this.client = null;
+      this.total = 0.00;
+
+      modal.show();
+      //this.paginas = resp['data']['total_paginas'];
+      //console.log(this.products);
+    });
+
+
+  }
+
+  cerrarModalVenta(){
+    const targetEl = document.getElementById('popup-modal-result');
+    const modal = new Modal(targetEl);
+
+    modal.hide();
   }
 }
