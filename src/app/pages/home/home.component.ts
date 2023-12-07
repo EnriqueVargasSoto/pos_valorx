@@ -39,10 +39,6 @@ export class HomeComponent {
 
   async getProducts() {
 
-    //if (this.filtro != "") {
-    //  this.pagination = 0;
-    //}
-
     let body = {
       'lista_precio' : environment.lista_precio,
       'pagina' : this.pagination,
@@ -182,7 +178,6 @@ export class HomeComponent {
       //this.paginas = resp['data']['total_paginas'];
       //console.log(this.products);
     });
-
 
   }
 
