@@ -1,13 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ServicesService } from 'src/app/utils/services.service';
 import { environment } from 'src/environments/environment.development';
 import { Modal } from 'flowbite';
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit{
 
   pagination: number = 0;
   filtro: string = "";
@@ -28,13 +29,20 @@ export class HomeComponent {
 
   venta: any;
 
+  modalCreateUsuario: any;
+  documento:string = "";
+  data : any;
 
-  constructor(private service: ServicesService){}
+  constructor(private service: ServicesService, private http: HttpClient){
+    //const targetEl = document.getElementById('crud-modal');
+    //this.modalCreateUsuario = new Modal(targetEl);
+  }
 
   async ngOnInit() {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
     await this.getProducts();
+
   }
 
   async getProducts() {
@@ -51,9 +59,16 @@ export class HomeComponent {
 
       console.log(resp);
       this.products = resp['data']['items'];
+      this.products = this.products.map(product => ({...product, imageLoaded: true}));
       this.paginas = resp['data']['total_paginas'];
       console.log(this.products);
     });
+  }
+
+  handleImageError(product: any) {
+    // Cambia la URL de la imagen a la imagen por defecto en caso de error
+    product.imageUrl = "./../../assets/logo.svg";
+    product.imageLoaded = false; // Cambia el estado para mostrar la imagen por defecto
   }
 
   selectProduct(product: any){
@@ -165,7 +180,7 @@ export class HomeComponent {
       const modal = new Modal(targetEl);
 
     console.log(body);
-    await this.service.consulta('save-sale','post', body).subscribe(resp => {
+    await this.http.post('http://localhost:8000/api/save-sale', body, { responseType: 'blob' }).subscribe(/*resp => {
 
       console.log(resp);
       this.venta = resp;
@@ -175,9 +190,26 @@ export class HomeComponent {
       this.total = 0.00;
 
       modal.show();
+
       //this.paginas = resp['data']['total_paginas'];
       //console.log(this.products);
-    });
+    }*/
+    (blob: Blob) => {
+      // Crear un enlace para descargar el archivo
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'venta.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    },
+    error => {
+      console.error('Error al guardar la venta y generar el PDF:', error);
+      // Manejar el error de acuerdo a tus necesidades
+    }
+    );
 
   }
 
@@ -186,5 +218,27 @@ export class HomeComponent {
     const modal = new Modal(targetEl);
 
     modal.hide();
+  }
+
+  modalUsuario(){
+    this.modalCreateUsuario.show();
+  }
+
+  async buscarDocumentoApiPeru(){
+    console.log(this.documento.length);
+    let header = {
+      'Accept' : 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization' : 'Bearer 7e0173d10d1258cbdc300c40ad9b31776ee8c09fdc2e69b4935da818187337fb'
+    };
+    let body = {
+      'dni' : this.documento
+    }
+    if (this.documento.length == 8) {
+      await this.http.post('https://apiperu.dev/api/dni', body,{headers: header}).subscribe((resp) => {
+        console.log(resp);
+        this.data = resp;
+      })
+    }
   }
 }
