@@ -163,7 +163,7 @@ export class HomeComponent implements OnInit{
     let body = {
       'plataforma_origen' : '1',
       'usuario' : 'VENDEDOR1',
-      'cod_comprobante' : this.client.tipodocid == 'DNI' ? 'BOL' : 'FXV',
+      'cod_comprobante' : this.client.tipodocid == 'DNI' ? 'BOL' : 'FXC',
       'serie_comprobante' : 'B801',
       'fecha_comprobante' : '2023-11-21',
       'vendedor' : '10247812',
@@ -180,7 +180,7 @@ export class HomeComponent implements OnInit{
       const modal = new Modal(targetEl);
 
     console.log(body);
-    await this.http.post('http://localhost:8000/api/save-sale', body, { responseType: 'blob' }).subscribe(/*resp => {
+    await this.http.post('https://backend-pos.atiendo.pe/api/save-sale', body, { responseType: 'blob' }).subscribe(/*resp => {
 
       console.log(resp);
       this.venta = resp;
