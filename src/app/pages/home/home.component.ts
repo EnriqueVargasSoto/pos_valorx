@@ -181,7 +181,7 @@ export class HomeComponent implements OnInit{
 
     console.log(body);
     await this.http.post('https://backend-pos.atiendo.pe/api/save-sale', body, { responseType: 'blob' }).subscribe(/*resp => {
-
+      //actualizado
       console.log(resp);
       this.venta = resp;
 
