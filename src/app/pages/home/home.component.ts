@@ -32,6 +32,7 @@ export class HomeComponent implements OnInit{
   modalCreateUsuario: any;
   documento:string = "";
   data : any;
+  usuario: any;
 
   constructor(private service: ServicesService, private http: HttpClient){
     //const targetEl = document.getElementById('crud-modal');
@@ -41,6 +42,7 @@ export class HomeComponent implements OnInit{
   async ngOnInit() {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
+    this.usuario = localStorage.getItem('user');
     await this.getProducts();
 
   }
@@ -160,12 +162,15 @@ export class HomeComponent implements OnInit{
       bodyDetail.push(detail);
     }
 
+    const hoy = new Date();
+    const formatoFecha = new Intl.DateTimeFormat('es', { year: 'numeric', month: '2-digit', day: '2-digit' });
+
     let body = {
       'plataforma_origen' : '1',
-      'usuario' : 'VENDEDOR1',
+      'usuario' : this.usuario['usuario'],//'VENDEDOR1',
       'cod_comprobante' : this.client.tipodocid == 'DNI' ? 'BOL' : 'FXC',
       'serie_comprobante' : 'B801',
-      'fecha_comprobante' : '2023-11-21',
+      'fecha_comprobante' : formatoFecha.formatToParts(hoy),//'2023-11-21',
       'vendedor' : '10247812',
       'lista_precio' : environment.lista_precio,
       'nro_document_ide' : this.client.nrodocide,
