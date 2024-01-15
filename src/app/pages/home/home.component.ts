@@ -176,7 +176,7 @@ export class HomeComponent implements OnInit{
       'cod_comprobante' : this.client.tipodocid == 'DNI' ? 'BOL' : 'FXC',
       'serie_comprobante' : 'B801',
       'fecha_comprobante' : fechaActual.format('YYYY-MM-DD'),//formatoFecha.formatToParts(hoy),//'2023-11-21',
-      'vendedor' : '10247812',
+      'vendedor' : '4644',
       'lista_precio' : this.client.listprec,//environment.lista_precio,
       'nro_document_ide' : this.client.nrodocide,
       'client' : this.client.cliente,
