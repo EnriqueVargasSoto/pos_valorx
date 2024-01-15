@@ -3,6 +3,8 @@ import { ServicesService } from 'src/app/utils/services.service';
 import { environment } from 'src/environments/environment.development';
 import { Modal } from 'flowbite';
 import { HttpClient } from '@angular/common/http';
+import * as moment from 'moment';
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -42,7 +44,10 @@ export class HomeComponent implements OnInit{
   async ngOnInit() {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
-    this.usuario = localStorage.getItem('user');
+    const userJson = localStorage.getItem('user');
+    console.log(userJson);
+    this.usuario = JSON.parse(userJson!);
+    console.log(this.usuario);
     await this.getProducts();
 
   }
@@ -162,17 +167,17 @@ export class HomeComponent implements OnInit{
       bodyDetail.push(detail);
     }
 
-    const hoy = new Date();
-    const formatoFecha = new Intl.DateTimeFormat('es', { year: 'numeric', month: '2-digit', day: '2-digit' });
+    const fechaActual = moment();
+    //const formatoFecha = new Intl.DateTimeFormat('es', { year: 'numeric', month: '2-digit', day: '2-digit' });
 
     let body = {
       'plataforma_origen' : '1',
       'usuario' : this.usuario['usuario'],//'VENDEDOR1',
       'cod_comprobante' : this.client.tipodocid == 'DNI' ? 'BOL' : 'FXC',
       'serie_comprobante' : 'B801',
-      'fecha_comprobante' : formatoFecha.formatToParts(hoy),//'2023-11-21',
+      'fecha_comprobante' : fechaActual.format('YYYY-MM-DD'),//formatoFecha.formatToParts(hoy),//'2023-11-21',
       'vendedor' : '10247812',
-      'lista_precio' : environment.lista_precio,
+      'lista_precio' : this.client.listprec,//environment.lista_precio,
       'nro_document_ide' : this.client.nrodocide,
       'client' : this.client.cliente,
       'forma_pago' : "001",
