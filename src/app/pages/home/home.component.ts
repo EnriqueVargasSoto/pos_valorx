@@ -172,14 +172,14 @@ export class HomeComponent implements OnInit{
 
     let body = {
       'plataforma_origen' : '1',
-      'usuario' : this.usuario['usuario'],//'VENDEDOR1',
+      'usuario' : this.usuario['usuario'].toString(),//'VENDEDOR1',
       'cod_comprobante' : this.client.tipodocid == 'DNI' ? 'BOL' : 'FXC',
       'serie_comprobante' : 'B801',
       'fecha_comprobante' : fechaActual.format('YYYY-MM-DD'),//formatoFecha.formatToParts(hoy),//'2023-11-21',
       'vendedor' : '4644',
-      'lista_precio' : this.client.listprec,//environment.lista_precio,
-      'nro_documento_ide' : this.client.nrodocide,
-      'cliente' : this.client.cliente,
+      'lista_precio' : this.client.listprec.toString(),//environment.lista_precio,
+      'nro_documento_ide' : this.client.nrodocide.toString(),
+      'cliente' : this.client.cliente.toString(),
       'forma_pago' : "001",
       'moneda' : 'PEN',
       'detalle_sales' : bodyDetail,
